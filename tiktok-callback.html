@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>El Ultra · Mercados — Autorización</title>
+<style>body{background:#0B0F0D;color:#eee;font:17px/1.55 system-ui,sans-serif;max-width:640px;margin:0 auto;padding:32px 16px}
+h1{color:#F5B700}code{display:block;word-break:break-all;background:#121815;border:2px solid #24302B;border-radius:12px;padding:14px;margin:12px 0;font-size:15px}
+button{font:16px system-ui;font-weight:700;background:#F5B700;color:#000;border:3px solid #000;border-radius:12px;padding:12px 18px;box-shadow:4px 4px 0 #000;cursor:pointer}
+.error{color:#FF3B47}small{color:#8E9B95}</style></head>
+<body>
+<h1>El Ultra · Mercados</h1>
+<div id="ok" hidden>
+<p>Autorización recibida. Copia este código en el panel del mini-PC; caduca en unos minutos.</p>
+<code id="code"></code>
+<button id="copiar" type="button">Copiar</button> <small id="copiado"></small>
+</div>
+<div id="ko" hidden><p class="error">No se ha podido autorizar:</p><code id="error"></code></div>
+<p><small>Esta página no envía el código a ningún sitio: solo te lo muestra para que lo copies.</small></p>
+<script>
+(function () {
+  var q = new URLSearchParams(location.search);
+  var code = q.get("code"), err = q.get("error");
+  if (err) {
+    document.getElementById("ko").hidden = false;
+    document.getElementById("error").textContent = q.get("error_description") || err;
+  } else if (code) {
+    document.getElementById("ok").hidden = false;
+    document.getElementById("code").textContent = code;
+    document.getElementById("copiar").onclick = function () {
+      navigator.clipboard.writeText(code).then(function () {
+        document.getElementById("copiado").textContent = "¡Copiado!";
+      });
+    };
+  } else {
+    document.getElementById("ko").hidden = false;
+    document.getElementById("error").textContent = "Falta el código de autorización en la dirección.";
+  }
+  history.replaceState(null, "", location.pathname);   // que el código no se quede en la barra ni en el historial
+})();
+</script>
+</body></html>
